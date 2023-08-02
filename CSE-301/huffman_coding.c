@@ -8,15 +8,15 @@ struct node{
     node *right;
 };
 
-void sortArray(node **queue,int s,int n);
-
 node *createNode(node *l,node *r);
+
+void sortArray(node *queue[],int n);
 
 void printArray(node *root,int *arr,int top);
 
 int main(){
     int n,i,j;
-    node *temp=(node*)malloc(sizeof(node));
+    node * temp = (node*)malloc(sizeof(node));
     printf("Enter number of nodes: ");
     scanf("%d",&n);
     node **queue=(node**)malloc(sizeof(node*)*n);
@@ -31,48 +31,61 @@ int main(){
         scanf("%d",&queue[i]->freq);
         queue[i]->left=queue[i]->right=NULL;
     }
-
-    sortArray(queue,0,n);
-
-    for(i=0;i<n-1;i++){
-        queue[i+1]=createNode(queue[i],queue[i+1]);
-        sortArray(queue,i+1,n);
+    
+    i=0;
+    while(i<n-1){
+        
+       // printf("\n");
+        sortArray(queue,n);
+        // printf("After sorting (%d to %d):\n",i,n-1);
+        // for(j=0;j<n;j++){
+        //     printf("%d: %d\t\t",j,queue[j]->freq);
+            
+        // }
+        printf("\n");
+        temp=createNode(queue[0],queue[1]);
+        // queue[0]->freq=temp->freq;
+        // queue[0]->ch = temp->ch;
+        // queue[0]->left = temp->left;
+        // queue[0]->right = temp->right;
+       queue[0]=temp;
+        queue[1]->freq=__INT_MAX__;
+       // printf("Temp frequency: %d\n",temp->freq);
+        // sortArray(queue,n);
+        i++;
+        //free(temp);
     }
-
-    for(i=0;i<n;i++){
-        printf("%d\t",queue[i]->freq);
-    }
-    printf("\n");
     int arr[n];
-    printArray(queue[n-1],arr,0);
+    printArray(temp,arr,0);
+   // printf("%c",temp->right->right->right->ch);
     return 0;
-}
-
-void sortArray(node **queue,int s,int n){
-    int j;
-    node *temp=(node*)malloc(sizeof(node));
-    for(;s<n;s++){
-        for(j=s+1;j<n;j++){
-            if(queue[s]->freq>queue[j]->freq){
-                temp=queue[s];
-                queue[s]=queue[j];
-                queue[j]=temp;
-            }
-        }
-    }
 }
 
 node *createNode(node *l,node *r){
     node *temp=(node*)malloc(sizeof(node));
     temp->freq=l->freq+r->freq;
-    temp->ch='X';
     temp->left=l;
     temp->right=r;
+    temp->ch='X';
     return temp;
 }
 
+void sortArray(node *queue[],int n){
+    node *tmp=malloc(sizeof(node));
+    int i,j;
+    for(i=0;i<n;i++){
+        for(j=i;j<n;j++){
+            if(queue[i]->freq>queue[j]->freq){
+                tmp=queue[i];
+                queue[i]=queue[j];
+                queue[j]=tmp;
+            }
+        }
+    }
+}
+
 void printArray(node *root,int *arr,int top){
-    if(!root->left&&!root->right){
+    if(root->left == NULL && root->right==NULL){
         printf("%c: ",root->ch);
         for(int i=0;i<top;i++){
             printf("%d",arr[i]);
@@ -88,4 +101,6 @@ void printArray(node *root,int *arr,int top){
         arr[top]=1;
         printArray(root->right,arr,top+1);
     }
+    
+
 }
